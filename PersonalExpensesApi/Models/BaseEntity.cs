@@ -8,13 +8,13 @@ public abstract class BaseEntity : IBaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public required string Id { get; set; }
+    public string? Id { get; set; }
 
     [Required]
     [Column(TypeName = "timestamp")]
-    public required DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     [Required]
     [Column(TypeName = "timestamp")]
-    public required DateTime UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

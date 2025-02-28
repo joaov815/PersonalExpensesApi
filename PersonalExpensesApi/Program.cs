@@ -1,20 +1,43 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PersonalExpensesApi.Data;
+using PersonalExpensesApi.Extensions;
+using PersonalExpensesApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var configuration = builder.Configuration;
+builder.Services.AddSwaggerGenWithAuth(configuration);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
 );
 
+// Add authentication
+builder
+    .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // Disable in dev
+        options.Audience = configuration["Authentication:Audience"];
+        options.MetadataAddress = configuration["Authentication:MetadataAddress"]!;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = configuration["Authentication:ValidIssuer"]
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
 var app = builder.Build();
+
+builder.WebHost.UseUrls($"http://0.0.0.0:{configuration["PORT"] ?? "8090"}");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -23,6 +46,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseMiddleware<EnsureUserMiddleware>();
+app.UseAuthorization();
+app.MapControllers();
+
+// app.UseHttpsRedirection();
 
 app.Run();
