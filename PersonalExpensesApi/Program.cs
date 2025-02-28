@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using PersonalExpensesApi.Data;
 using PersonalExpensesApi.Extensions;
 using PersonalExpensesApi.Middlewares;
+using PersonalExpensesApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddSwaggerGenWithAuth(configuration);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddScoped<ExpenseService, ExpenseService>();
 
 // Add authentication
 builder

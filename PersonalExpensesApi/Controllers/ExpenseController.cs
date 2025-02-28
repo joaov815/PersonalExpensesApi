@@ -1,27 +1,20 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PersonalExpensesApi.Data;
+using PersonalExpensesApi.Dtos;
+using PersonalExpensesApi.Services;
 
 namespace PersonalExpensesApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/expenses")]
-public sealed class ExpenseController : ControllerBase
+public sealed class ExpenseController(ExpenseService expenseService) : ControllerBase
 {
-    private readonly AppDbContext _context;
-
-    public ExpenseController(AppDbContext context)
+    [HttpPost]
+    public async Task<IActionResult> AddExpense([FromBody] CreateExpenseDto dto)
     {
-        _context = context;
-    }
+        await expenseService.CreateAsync(dto);
 
-    [HttpGet]
-    [Authorize]
-    public async Task<IActionResult> GetExpenses()
-    {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        return Ok(new { UserId = userId, Expenses = new[] { "Expense1", "Expense2" } });
+        return Ok();
     }
 }

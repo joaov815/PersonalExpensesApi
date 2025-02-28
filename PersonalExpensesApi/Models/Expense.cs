@@ -11,7 +11,7 @@ public class Expense : BaseEntity
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal Value { get; set; }
+    public required decimal Value { get; set; }
 
     [Required]
     public DateTime Date { get; set; }
@@ -26,13 +26,14 @@ public class Expense : BaseEntity
 
     public int? CurrentInstallment { get; set; }
 
-    public Guid? ExpenseKindId { get; set; }
+    public string? ExpenseKindId { get; set; }
     public ExpenseKind? ExpenseKind { get; set; }
 
-    public Guid? PaymentKindId { get; set; }
+    public string? PaymentKindId { get; set; }
     public PaymentKind? PaymentKind { get; set; }
 
     [Required]
-    public Guid AccountId { get; set; }
-    public required Account Account { get; set; }
+    public string? AccountId { get; set; }
+
+    public Account? Account { get; set; }
 }
