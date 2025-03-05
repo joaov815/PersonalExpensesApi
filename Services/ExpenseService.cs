@@ -6,13 +6,13 @@ namespace PersonalExpensesApi.Services;
 
 public class ExpenseService(AppDbContext context)
 {
-    public async Task CreateAsync(CreateExpenseDto dto)
+    public async Task CreateAsync(CreateExpenseDto dto, Account account)
     {
         var expense = new Expense
         {
             Name = dto.Name,
             Value = dto.Value,
-            AccountId = dto.AccountId,
+            AccountId = account.Id,
         };
 
         context.Add(expense);

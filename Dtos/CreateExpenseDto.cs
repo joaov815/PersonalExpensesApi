@@ -11,5 +11,4 @@ public class CreateExpenseDto
     public int? CurrentInstallment { get; set; }
     public string? ExpenseKindId { get; set; }
     public string? PaymentKindId { get; set; }
-    public required string AccountId { get; set; }
 }
