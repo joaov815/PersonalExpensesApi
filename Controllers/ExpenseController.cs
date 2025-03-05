@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalExpensesApi.Dtos;
@@ -15,16 +14,10 @@ public sealed class ExpenseController(ExpenseService expenseService) : Controlle
     [HttpPost]
     public async Task<IActionResult> AddExpense([FromBody] CreateExpenseDto dto)
     {
-        if (
-            HttpContext.Items.TryGetValue("CurrentAccount", out var userObj)
-            && userObj is Account account
-        )
-        {
-            await expenseService.CreateAsync(dto, account);
+        var account = (Account)HttpContext.Items["CurrentAccount"]!;
 
-            return Ok();
-        }
+        await expenseService.CreateAsync(dto, account);
 
-        return StatusCode(500, "An unexpected error occurred.");
+        return Ok();
     }
 }

@@ -11,8 +11,8 @@ public class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T>
     {
         builder.Property(e => e.Id).HasDefaultValueSql("uuid_generate_v4()");
 
-        builder.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(e => e.CreatedAt).HasDefaultValueSql("NOW()");
 
-        builder.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        builder.Property(e => e.UpdatedAt).HasDefaultValueSql("NOW() ON UPDATE NOW()");
     }
 }
