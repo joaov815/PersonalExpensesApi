@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +16,9 @@ var configuration = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(configuration);
 
+// Add automapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
 );
@@ -31,23 +35,16 @@ builder
         options.MetadataAddress = configuration["Authentication:MetadataAddress"]!;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = configuration["Authentication:ValidIssuer"]
+            ValidIssuer = configuration["Authentication:ValidIssuer"],
         };
     });
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
-var app = builder.Build();
-
 builder.WebHost.UseUrls($"http://0.0.0.0:{configuration["PORT"] ?? "8090"}");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+var app = builder.Build();
 
 app.UseAuthentication();
 app.UseMiddleware<EnsureUserMiddleware>();
@@ -55,5 +52,17 @@ app.UseAuthorization();
 app.MapControllers();
 
 // app.UseHttpsRedirection();
+
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint($"/swagger/v1/swagger.json", "My API V1");
+        c.RoutePrefix = "swagger"; // Ensures Swagger opens at the root
+    });
+}
 
 app.Run();

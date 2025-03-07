@@ -20,4 +20,40 @@ public sealed class ExpenseController(ExpenseService expenseService) : Controlle
 
         return Ok();
     }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> AddExpense(string id, [FromBody] UpdateExpenseDto dto)
+    {
+        var account = (Account)HttpContext.Items["CurrentAccount"]!;
+
+        await expenseService.UpdateAsync(id, dto, account.Id!);
+
+        return Ok();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetExpenses(string id)
+    {
+        Account account = (Account)HttpContext.Items["CurrentAccount"]!;
+
+        return Ok(await expenseService.GetExpenseById(id, account.Id!));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetExpenses()
+    {
+        Account account = (Account)HttpContext.Items["CurrentAccount"]!;
+
+        return Ok(await expenseService.GetExpenses(account.Id!));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteExpenseById(string id)
+    {
+        Account account = (Account)HttpContext.Items["CurrentAccount"]!;
+
+        await expenseService.DeleteExpenseById(id, account.Id!);
+
+        return Ok();
+    }
 }
