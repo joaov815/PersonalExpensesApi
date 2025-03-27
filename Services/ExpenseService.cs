@@ -17,6 +17,8 @@ public class ExpenseService(AppDbContext context, IMapper mapper)
             AccountId = account.Id,
         };
 
+        mapper.Map(dto, expense);
+
         context.Add(expense);
 
         await context.SaveChangesAsync();
@@ -27,8 +29,6 @@ public class ExpenseService(AppDbContext context, IMapper mapper)
         var expense = await GetExpenseById(id, accountId);
 
         mapper.Map(dto, expense);
-
-        // context.Add(updatedExpense);
 
         await context.SaveChangesAsync();
     }
