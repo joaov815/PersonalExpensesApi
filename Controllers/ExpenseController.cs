@@ -22,7 +22,7 @@ public sealed class ExpenseController(ExpenseService expenseService) : Controlle
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> AddExpense(string id, [FromBody] UpdateExpenseDto dto)
+    public async Task<IActionResult> UpdateExpense(string id, [FromBody] UpdateExpenseDto dto)
     {
         var account = (Account)HttpContext.Items["CurrentAccount"]!;
 
