@@ -51,6 +51,18 @@ app.UseMiddleware<EnsureUserMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
+// Configuração do CORS
+app.UseCors(builder =>
+{
+    string[] corsWhitelist = configuration["CORS_ALLOW_LIST"]?.Split(',') ?? [];
+
+    builder
+        .WithMethods(["POST", "GET", "DELETE", "PATCH"])
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed(host => corsWhitelist.Contains(host));
+});
+
 // app.UseHttpsRedirection();
 
 
