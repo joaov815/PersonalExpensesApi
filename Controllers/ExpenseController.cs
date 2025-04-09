@@ -10,4 +10,4 @@ namespace PersonalExpensesApi.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 public sealed class ExpenseController(ExpenseService expenseService)
-    : CrudController<Expense, UpdateExpenseDto>(expenseService) { }
+    : CrudController<Expense, Expense, UpdateExpenseDto>(expenseService) { }

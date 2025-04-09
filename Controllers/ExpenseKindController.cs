@@ -9,4 +9,4 @@ namespace PersonalExpensesApi.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 public sealed class ExpenseKindController(ExpenseKindService expenseService)
-    : CrudController<ExpenseKind, ExpenseKind>(expenseService) { }
+    : CrudController<ExpenseKind, ExpenseKind, ExpenseKind>(expenseService) { }

@@ -1,20 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalExpensesApi.Interfaces;
+using PersonalExpensesApi.Models;
 using PersonalExpensesApi.Services;
 
 namespace PersonalExpensesApi.Controllers;
 
-public class CrudController<Entity, UpdateDto>(CrudService<Entity, UpdateDto> service)
-    : ControllerBase
+public class CrudController<Entity, CreateDto, UpdateDto>(
+    CrudService<Entity, CreateDto, UpdateDto> service
+) : ControllerBase
     where Entity : class, IBaseEntity
+    where CreateDto : class
     where UpdateDto : class
 {
-    [HttpPost]
-    public async Task<IActionResult> AddExpense([FromBody] Entity dto)
+    protected Account GetAccount()
     {
-        // var account = (Account)HttpContext.Items["CurrentAccount"]!;
+        return (Account)HttpContext.Items["CurrentAccount"]!
+            ?? throw new Exception("Account not found");
+    }
 
-        await service.CreateAsync(dto);
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateDto dto)
+    {
+        await service.CreateAsync(dto, GetAccount());
 
         return Ok();
     }
@@ -22,9 +29,7 @@ public class CrudController<Entity, UpdateDto>(CrudService<Entity, UpdateDto> se
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateExpense(string id, [FromBody] UpdateDto dto)
     {
-        // var account = (Account)HttpContext.Items["CurrentAccount"]!;
-
-        await service.UpdateAsync(id, dto);
+        await service.UpdateAsync(id, dto, GetAccount());
 
         return Ok();
     }
@@ -32,25 +37,19 @@ public class CrudController<Entity, UpdateDto>(CrudService<Entity, UpdateDto> se
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
-        // Account account = (Account)HttpContext.Items["CurrentAccount"]!;
-
-        return Ok(await service.GetByIdAsync(id));
+        return Ok(await service.GetByIdAsync(id, GetAccount()));
     }
 
     [HttpGet]
     public async Task<IActionResult> List()
     {
-        // Account account = (Account)HttpContext.Items["CurrentAccount"]!;
-
-        return Ok(await service.ListAsync());
+        return Ok(await service.ListAsync(GetAccount()));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteExpenseById(string id)
     {
-        // Account account = (Account)HttpContext.Items["CurrentAccount"]!;
-
-        await service.DeleteByIdAsync(id);
+        await service.DeleteByIdAsync(id, GetAccount());
 
         return Ok();
     }
