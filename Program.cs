@@ -25,6 +25,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ExpenseService, ExpenseService>();
 builder.Services.AddScoped<ExpenseKindService, ExpenseKindService>();
+builder.Services.AddScoped<PaymentKindService, PaymentKindService>();
 
 // Add authentication
 builder

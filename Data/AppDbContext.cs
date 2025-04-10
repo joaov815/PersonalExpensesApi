@@ -35,7 +35,6 @@ public class AppDbContext(IConfiguration configuration) : DbContext
 
         // Unique Constraint for KeycloakId in Account
         modelBuilder.Entity<Account>().HasIndex(a => a.KeycloakId).IsUnique();
-        modelBuilder.Entity<PaymentKind>().HasIndex(a => a.Code).IsUnique();
     }
 
     public override int SaveChanges()

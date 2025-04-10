@@ -27,7 +27,7 @@ public class CrudController<Entity, CreateDto, UpdateDto>(
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateExpense(string id, [FromBody] UpdateDto dto)
+    public async Task<IActionResult> Update(string id, [FromBody] UpdateDto dto)
     {
         await service.UpdateAsync(id, dto, GetAccount());
 
@@ -47,7 +47,7 @@ public class CrudController<Entity, CreateDto, UpdateDto>(
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteExpenseById(string id)
+    public async Task<IActionResult> DeleteById(string id)
     {
         await service.DeleteByIdAsync(id, GetAccount());
 
